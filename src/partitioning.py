@@ -598,17 +598,18 @@ if __name__ == "__main__":
     import numpy as np
     import scipy
     import time
+    import sys
 
-    n = 1000
-    t = 32
-    squirt = math.floor(math.sqrt(n))
+    n = int(sys.argv[1])
+    t = int(sys.argv[2])
+    squeert = math.floor(math.sqrt(n))
     pts = [(random.random(), random.random()) for i in range(n)]
     # tree = chan_partitions2(pts, b=28, min_cell_size=100)
     # cells = partitions(pts, n*math.log(n), min_cell_size=n/t)
     start = time.time()
-    cells = partitions(pts, 32, min_cell_size=n/t)
+    cells = partitions(pts, 16, min_cell_size=n/t)
     print("Elapsed: ", time.time()-start)
-    # cells = partitions(pts, squirt, min_cell_size=n/t,test_set_f=grid_test_set)
+    # cells = partitions(pts, squeert, min_cell_size=n/t,test_set_f=grid_test_set)
 
     #rhs crossing number
     sets = random_test_set(pts,n)
@@ -623,18 +624,18 @@ if __name__ == "__main__":
 
 
     # #grid crossing number
-    # crossing_number = [0]*(2*squirt)
-    # for j in range(squirt):
+    # crossing_number = [0]*(2*squeert)
+    # for j in range(squeert):
     #     for c in cells:
     #         for i in range(1,len(c)):
     #             if c[0][0] >= j/math.floor(math.sqrt(n)) and c[i][0] < j/math.floor(math.sqrt(n)) or c[0][0] <= j/math.floor(math.sqrt(n)) and c[i][0] > j/math.floor(math.sqrt(n)):
     #                 crossing_number[j] += 1
     #                 break
-    # for j in range(squirt):
+    # for j in range(squeert):
     #     for c in cells:
     #         for i in range(1,len(c)):
     #             if c[0][1] >= j/math.floor(math.sqrt(n)) and c[i][1] < j/math.floor(math.sqrt(n)) or c[0][1] <= j/math.floor(math.sqrt(n)) and c[i][1] > j/math.floor(math.sqrt(n)):
-    #                 crossing_number[squirt + j] += 1
+    #                 crossing_number[squeert + j] += 1
     #                 break
 
     print("# of cells:", len(cells), " // crossing number:", max(crossing_number))
@@ -646,9 +647,9 @@ if __name__ == "__main__":
     #     for simplex in ch.simplices:
     #         plt.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-',zorder=101)
     #
-    # for i in range(squirt):
-    #     plt.plot([0,1],[i/squirt,i/squirt], color='lightgrey')
-    #     plt.plot([i/squirt,i/squirt],[0,1], color='lightgrey')
+    # for i in range(squeert):
+    #     plt.plot([0,1],[i/squeert,i/squeert], color='lightgrey')
+    #     plt.plot([i/squeert,i/squeert],[0,1], color='lightgrey')
     # plt.show()
     # f, ax = plt.subplots()
     # s_pts = random.sample(pts, 10000)
