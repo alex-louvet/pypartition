@@ -1,6 +1,8 @@
 # Modification of pypartition to get crossing number data
 
-This is a fork of the pypartion project to evaluate its performances in terms of crossing number.
+This repo is part of the code for the paper "A Greedy Algorithm for Low-Crossing Partitions for General Set Systems" which main development code is available on [Github](https://github.com/alex-louvet/partitions).
+
+This is a fork of the pypartion project to evaluate the performances of the implementation of Matousek's algorithm. Running `partitioning.py n t (grid|hs)` will generate a partition of either the grid set system or random halfspaces with `n` points and `t` parts. The results will be stored in the file `res.csv` as explained in the main development code repo.
 
 ## pypartition
 Cuttings and partition tree code for generating small samples for halfspaces.
