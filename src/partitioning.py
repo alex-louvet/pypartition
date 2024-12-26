@@ -39,6 +39,14 @@ def random_test_set(pts, t, c=10):
         test_set.append(to_line(p1, p2))
     return test_set
 
+def grid_test_set(pts,t):
+    test_set = []
+    for i in range(t):
+        p1, p2 = ((i/t + 0.01,0),(i/t-0.01,1))
+        test_set.append(to_line(p1, p2))
+    for i in range(t):
+        test_set.append(Line(0,i/t))
+    return test_set
 
 def partitions(pts, b, min_cell_size=100, cell_sample_size=1, test_set_f=random_test_set):
 
@@ -67,7 +75,8 @@ def partitions(pts, b, min_cell_size=100, cell_sample_size=1, test_set_f=random_
                     final_cells = []
                     final_cells.extend([pts for _, pts in cell_queue])
                     final_cells.append(pts_not_in_cells)
-                    return sample_cells(final_cells, cell_sample_size)
+                    # return sample_cells(final_cells, cell_sample_size)
+                    return final_cells
         heapq.heappush(cell_queue, FirstList((-len(pts_not_in_cells), pts_not_in_cells)))
 
 
@@ -585,11 +594,65 @@ def quadTreeSample(pts, min_cell_size=100, cell_sample_size=1):
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
     import matplotlib
-    pts = [(random.random(), random.random()) for i in range(100000)]
-    tree = chan_partitions2(pts, b=28, min_cell_size=100)
-    f, ax = plt.subplots()
-    s_pts = random.sample(pts, 10000)
-    x, y = zip(*pts)
-    ax.scatter(x, y, marker='.')
-    tree.visualize_arrangement(ax, min(x), max(x), min(y), max(y))
-    plt.show()
+    import matplotlib.cm as cm
+    import numpy as np
+    import scipy
+    import time
+
+    n = 1000
+    t = 32
+    squirt = math.floor(math.sqrt(n))
+    pts = [(random.random(), random.random()) for i in range(n)]
+    # tree = chan_partitions2(pts, b=28, min_cell_size=100)
+    # cells = partitions(pts, n*math.log(n), min_cell_size=n/t)
+    start = time.time()
+    cells = partitions(pts, 32, min_cell_size=n/t)
+    print("Elapsed: ", time.time()-start)
+    # cells = partitions(pts, squirt, min_cell_size=n/t,test_set_f=grid_test_set)
+
+    #rhs crossing number
+    sets = random_test_set(pts,n)
+    crossing_number = [0]*(len(sets))
+    for j,s in enumerate(sets):
+        for c in cells:
+            for i in range(1,len(c)):
+                if s.pt_eq_below_exact(c[0]) and s.pt_eq_above_exact(c[i]) or s.pt_eq_below_exact(c[i]) and s.pt_eq_above_exact(c[0]):
+                    crossing_number[j] += 1
+                    break
+
+
+
+    # #grid crossing number
+    # crossing_number = [0]*(2*squirt)
+    # for j in range(squirt):
+    #     for c in cells:
+    #         for i in range(1,len(c)):
+    #             if c[0][0] >= j/math.floor(math.sqrt(n)) and c[i][0] < j/math.floor(math.sqrt(n)) or c[0][0] <= j/math.floor(math.sqrt(n)) and c[i][0] > j/math.floor(math.sqrt(n)):
+    #                 crossing_number[j] += 1
+    #                 break
+    # for j in range(squirt):
+    #     for c in cells:
+    #         for i in range(1,len(c)):
+    #             if c[0][1] >= j/math.floor(math.sqrt(n)) and c[i][1] < j/math.floor(math.sqrt(n)) or c[0][1] <= j/math.floor(math.sqrt(n)) and c[i][1] > j/math.floor(math.sqrt(n)):
+    #                 crossing_number[squirt + j] += 1
+    #                 break
+
+    print("# of cells:", len(cells), " // crossing number:", max(crossing_number))
+
+    # colors = cm.viridis(np.linspace(0, 1, len(cells)))
+    # for p,c in zip(cells,colors):
+    #     ch = scipy.spatial.ConvexHull(p)
+    #     plt.scatter([x[0] for x in p], [x[1] for x in p], marker='.',s=10, zorder=100,color=c)
+    #     for simplex in ch.simplices:
+    #         plt.plot([p[simplex[0]][0],p[simplex[1]][0]], [p[simplex[0]][1], p[simplex[1]][1]], 'k-',zorder=101)
+    #
+    # for i in range(squirt):
+    #     plt.plot([0,1],[i/squirt,i/squirt], color='lightgrey')
+    #     plt.plot([i/squirt,i/squirt],[0,1], color='lightgrey')
+    # plt.show()
+    # f, ax = plt.subplots()
+    # s_pts = random.sample(pts, 10000)
+    # x, y = zip(*pts)
+    # ax.scatter(x, y, marker='.')
+    # tree.visualize_arrangement(ax, min(x), max(x), min(y), max(y))
+    # plt.show()

@@ -195,6 +195,10 @@ class Line:
     def pt_eq_below_exact(self, pt):
         y = self.evaluate(pt[0])
         return pt[1] <= y
+    
+    def pt_eq_above_exact(self, pt):
+        y = self.evaluate(pt[0])
+        return pt[1] >= y
 
     def pt_eq_above(self, pt):
         y = self.evaluate(pt[0])
